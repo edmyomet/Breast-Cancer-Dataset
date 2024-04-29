@@ -76,9 +76,11 @@ class BivariateAnalysis(UnivariateAnalysis):
         self.cov : pd.core.series.Series = self.df.cov(numeric_only=True)
         self.cov.to_csv(r'output\covariance_matrix.csv')
     
-    def __corr(self) -> None:
+    def __corr(self) -> pd.core.series.Series:
         self.corr:pd.core.series.Series = self.df.corr(numeric_only=True)
         self.corr.to_csv(r'output\correlation.csv')
+        return self.corr
+
     
     def __regr(self):
         y:pd.core.series.Series = self.encoder.encode()
@@ -97,10 +99,23 @@ class BivariateAnalysis(UnivariateAnalysis):
         self.__corr()
         self.__regr()
             
-            
+
+class ReturnAnalysis(UnivariateAnalysis):
+    def __init__(self) -> None:
+        super().__init__()
+        self.df['diagnosis'] = self.encoder.encode()
+
+    def __return_corr(self) -> pd.core.series.Series:
+        return self.df.corr()
+
+    def main(self) -> None:
+        return self.__return_corr()
             
 if __name__ == '__main__':
     uv = UnivariateAnalysis()
     uv.main()
     bv = BivariateAnalysis()
     bv.main()
+    
+    ra = ReturnAnalysis()
+    print(ra.main())
