@@ -5,13 +5,12 @@ import seaborn as sns
 from __import import Import
 from __numerical import ReturnAnalysis
 from __encode import Encoder
-
+from __preproc import FeatureSelect
 import_object = Import()
 encoder_obj = Encoder(import_object.main())
-
-
 bv_object = ReturnAnalysis()
-
+feature_select_obj = FeatureSelect()
+reduced_list = feature_select_obj.main()
 
 palette = sns.cubehelix_palette(start=-0.15,rot=-0.75)
 cmap = sns.cubehelix_palette(start=-0.15,rot=-0.75,as_cmap=True)
@@ -81,16 +80,32 @@ class EDA:
         plt.savefig(r'plots\clustermap.png')
     
         
-        
+    def __scatterplot(self) -> None:
+        fig,axes = plt.subplots(12,12,figsize=(40,40),squeeze=False)
+        fig.suptitle('Scatter Plot for Attribute Distributions')
+        slope:float
+        intercept:float
+        for row in range(12):
+            featurex:str = reduced_list[row]
+            x:pd.core.series.Series = self.df[featurex]
+            for col in range(12):
+                featurey = reduced_list[col]
+                y:pd.core.series.Series = self.df[featurey]
+                slope, intercept =  np.polyfit(x,y,1)
+                sns.scatterplot(data=self.df,x=x,y=y,hue=self.label,ax=axes[row][col],palette=palette)
+                axes[row][col].plot(x,x*slope+intercept,color='black')
+                #axes[row][col].set_title(f'{x},{y}')
+        plt.tight_layout()
+        plt.savefig(r'plots\scatter.png')
+                
                         
-        
-        
     
     def main(self) -> None:
-        self.__boxplot()
-        self.__normal_distr()
-        self.__heatplot()
-        self.__clustermap()
+        #self.__boxplot()
+        #self.__normal_distr()
+        #self.__heatplot()
+        #self.__clustermap()
+        self.__scatterplot()
         
             
                 
