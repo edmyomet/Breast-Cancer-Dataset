@@ -112,11 +112,11 @@ class KNeighbours:
     def __plot(self):
         fig,axes = plt.subplots(2,10,figsize=(25,8), squeeze=False)
         fig.suptitle('Plotting Predictions')
-        for i in range(2):
+        for i in range(10):
             feature = self.feature_list[i]
             x = self.X_train[feature]
             y = self.X_test[feature]
-            for j in range(10):
+            sns.scatterplot(x=x, y=y, hue=self.y)
                 
             
         plt.tight_layout()
